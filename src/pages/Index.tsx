@@ -4,10 +4,14 @@ import { useAuth } from '@/components/AuthProvider';
 import { DashboardLayout, DashboardOverview } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowRight } from 'lucide-react';
+import { Loader2, ArrowRight, Shield, Crown, Settings, User } from 'lucide-react';
+import { RoleGuard, AdminOnly, ModeratorOrHigher } from '@/components/RoleGuard';
+import { UserRoleDisplay } from '@/components/UserRoleDisplay';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const Index = () => {
   const { user, loading } = useAuth();
+  const { userRole, isAdmin, isModerator } = useUserRole();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,7 +59,171 @@ const Index = () => {
 
   return (
     <DashboardLayout>
-      <DashboardOverview />
+      <div className="space-y-6">
+        {/* Role Information Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <UserRoleDisplay />
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Role-Based Access
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Crown className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">Admin Access:</span>
+                  <span className={`text-sm ${isAdmin ? 'text-green-600' : 'text-red-600'}`}>
+                    {isAdmin ? '✓ Granted' : '✗ Denied'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Settings className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium">Moderator Access:</span>
+                  <span className={`text-sm ${isModerator ? 'text-green-600' : 'text-red-600'}`}>
+                    {isModerator ? '✓ Granted' : '✗ Denied'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm font-medium">User Access:</span>
+                  <span className="text-sm text-green-600">✓ Granted</span>
+                </div>
+              </div>
+              
+              {userRole && (
+                <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                  <p><strong>Role Source:</strong> {userRole.source}</p>
+                  <p><strong>Effective Role:</strong> {userRole.role}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Role-Based Content Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Admin Only Content */}
+          <AdminOnly
+            fallback={
+              <Card className="opacity-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="h-5 w-5" />
+                    Admin Panel
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Admin access required to view this content.
+                  </p>
+                </CardContent>
+              </Card>
+            }
+          >
+            <Card className="border-primary/20 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Crown className="h-5 w-5 text-primary" />
+                  Admin Panel
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Welcome, RAYN Admin! You have full system access.
+                </p>
+                <div className="space-y-2">
+                  <Button variant="outline" size="sm" className="w-full">
+                    System Settings
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full">
+                    User Management
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full">
+                    License Management
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </AdminOnly>
+
+          {/* Moderator or Higher Content */}
+          <ModeratorOrHigher
+            fallback={
+              <Card className="opacity-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="h-5 w-5" />
+                    Moderation Tools
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Moderator access required to view this content.
+                  </p>
+                </CardContent>
+              </Card>
+            }
+          >
+            <Card className="border-blue-200 bg-blue-50/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-blue-600" />
+                  Moderation Tools
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Enhanced access with moderation capabilities.
+                </p>
+                <div className="space-y-2">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Content Review
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full">
+                    User Reports
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full">
+                    Audit Logs
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </ModeratorOrHigher>
+
+          {/* User Content (Always Visible) */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                User Dashboard
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Standard user access and features.
+              </p>
+              <div className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full">
+                  My Licenses
+                </Button>
+                <Button variant="outline" size="sm" className="w-full">
+                  Profile Settings
+                </Button>
+                <Button variant="outline" size="sm" className="w-full">
+                  Support
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Dashboard Overview */}
+        <DashboardOverview />
+      </div>
     </DashboardLayout>
   );
 };
