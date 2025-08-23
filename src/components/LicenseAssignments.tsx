@@ -34,6 +34,7 @@ interface CustomerLicense {
   seats: number;
   used_seats: number;
   customer_id: string;
+  end_date: string;
 }
 
 export function LicenseAssignments() {
@@ -153,6 +154,7 @@ export function LicenseAssignments() {
         .select(`
           id,
           seats,
+          end_date,
           products(name),
           product_license_assignments(id)
         `)
@@ -165,7 +167,8 @@ export function LicenseAssignments() {
         product_name: (license.products as any)?.name || 'Unknown Product',
         seats: license.seats,
         used_seats: (license.product_license_assignments as any)?.length || 0,
-        customer_id: targetCustomerId
+        customer_id: targetCustomerId,
+        end_date: license.end_date
       }));
 
       setCustomerLicenses(licenses);
