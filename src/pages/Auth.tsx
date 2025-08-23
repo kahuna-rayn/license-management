@@ -102,44 +102,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
-        {/* Hero Section */}
-        <div className="hidden lg:block space-y-8 text-primary-foreground">
-          <div className="space-y-4">
-            <h1 className="text-5xl font-bold leading-tight">
-              RAYN License Hub
-            </h1>
-            <p className="text-xl text-primary-foreground/90">
-              Professional license management for enterprise software deployment and monitoring.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-6">
-            <div className="flex items-center gap-4 p-4 bg-primary-foreground/10 rounded-lg backdrop-blur-sm">
-              <Shield className="h-8 w-8 text-accent-green" />
-              <div>
-                <h3 className="font-semibold">Secure License Allocation</h3>
-                <p className="text-sm text-primary-foreground/80">Track and manage software licenses across your organization</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4 p-4 bg-primary-foreground/10 rounded-lg backdrop-blur-sm">
-              <Users className="h-8 w-8 text-accent-blue" />
-              <div>
-                <h3 className="font-semibold">Role-Based Access</h3>
-                <p className="text-sm text-primary-foreground/80">Admin, manager, and user roles with appropriate permissions</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4 p-4 bg-primary-foreground/10 rounded-lg backdrop-blur-sm">
-              <BarChart3 className="h-8 w-8 text-accent-orange" />
-              <div>
-                <h3 className="font-semibold">Analytics Dashboard</h3>
-                <p className="text-sm text-primary-foreground/80">Comprehensive insights into license usage and expiration</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="w-full max-w-6xl grid lg:grid-cols-1 gap-8 items-center">
 
         {/* Auth Form */}
         <div className="w-full max-w-md mx-auto">
