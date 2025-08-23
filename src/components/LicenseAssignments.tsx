@@ -351,11 +351,9 @@ export function LicenseAssignments() {
                   <div>
                     <p className="font-medium">{license.product_name}</p>
                     <p className="text-sm text-muted-foreground">
-<<<<<<< HEAD
-                      {license.used_seats} / {license.seats} seats used <br />
-=======
                       {license.used_seats} / {license.seats} seats used
->>>>>>> da44702f1e05d0b4d693f14dfe35e6bc73aaff17
+                    </p>
+                    <p className="text-sm text-muted-foreground">
                       Expires: {license.end_date}
                     </p>
                   </div>
