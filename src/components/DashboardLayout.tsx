@@ -144,41 +144,6 @@ export function DashboardLayout({ children, activeTab = 'dashboard', onTabChange
 }
 
 export function DashboardOverview() {
-  const metrics = [
-    {
-      title: "Total Licensed Seats",
-      value: "1,247",
-      change: "+12%",
-      trend: "up",
-      icon: Users,
-      color: "text-accent-blue",
-    },
-    {
-      title: "Active Assignments",
-      value: "1,089",
-      change: "+8%",
-      trend: "up", 
-      icon: Shield,
-      color: "text-status-success",
-    },
-    {
-      title: "Expiring Soon",
-      value: "23",
-      change: "+3",
-      trend: "warning",
-      icon: Clock,
-      color: "text-status-warning",
-    },
-    {
-      title: "License Utilization",
-      value: "87.3%",
-      change: "+2.1%",
-      trend: "up",
-      icon: TrendingUp,
-      color: "text-status-info",
-    },
-  ];
-
   const expiringLicenses = [
     { product: "Microsoft Office 365", users: 45, expires: "30 days", status: "warning" },
     { product: "Adobe Creative Suite", users: 12, expires: "15 days", status: "danger" },
@@ -188,38 +153,6 @@ export function DashboardOverview() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Metrics Overview */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">License Overview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {metrics.map((metric, index) => (
-            <Card key={index} className="card-gradient hover:shadow-elevated transition-all duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">{metric.title}</p>
-                    <p className="text-3xl font-bold mt-2">{metric.value}</p>
-                    <div className="flex items-center mt-2">
-                      <span className={`text-sm font-medium ${
-                        metric.trend === 'up' ? 'text-status-success' :
-                        metric.trend === 'warning' ? 'text-status-warning' :
-                        'text-status-danger'
-                      }`}>
-                        {metric.change}
-                      </span>
-                      <span className="text-sm text-muted-foreground ml-1">from last month</span>
-                    </div>
-                  </div>
-                  <div className={`p-3 rounded-lg bg-secondary ${metric.color}`}>
-                    <metric.icon className="h-6 w-6" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
       {/* Expiring Licenses */}
       <div>
         <div className="flex items-center justify-between mb-6">
