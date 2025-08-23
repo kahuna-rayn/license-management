@@ -22,11 +22,13 @@ import { getRoleDisplayName } from '@/lib/roles';
 
 interface DashboardLayoutProps {
   children: ReactNode;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, activeTab = 'dashboard', onTabChange }: DashboardLayoutProps) {
   const { user, signOut } = useAuth();
-  const { userRole, loading } = useUserRole();
+  const { userRole, loading, isRaynAdmin, isClientAdmin } = useUserRole();
 
   const handleSignOut = async () => {
     try {
@@ -83,19 +85,49 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <nav className="bg-card border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8 h-14">
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary border-b-2 border-primary">
+            <button 
+              onClick={() => onTabChange?.('dashboard')}
+              className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'dashboard' 
+                  ? 'text-primary border-b-2 border-primary' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
               <BarChart3 className="h-4 w-4" />
               Dashboard
             </button>
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              <Users className="h-4 w-4" />
-              License Assignments
-            </button>
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            {(isRaynAdmin || isClientAdmin) && (
+              <button 
+                onClick={() => onTabChange?.('license-assignments')}
+                className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                  activeTab === 'license-assignments' 
+                    ? 'text-primary border-b-2 border-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Users className="h-4 w-4" />
+                License Assignments
+              </button>
+            )}
+            <button 
+              onClick={() => onTabChange?.('software-inventory')}
+              className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'software-inventory' 
+                  ? 'text-primary border-b-2 border-primary' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
               <Monitor className="h-4 w-4" />
               Software Inventory
             </button>
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <button 
+              onClick={() => onTabChange?.('settings')}
+              className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'settings' 
+                  ? 'text-primary border-b-2 border-primary' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
               <Settings className="h-4 w-4" />
               Settings
             </button>
