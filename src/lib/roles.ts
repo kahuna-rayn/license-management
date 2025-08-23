@@ -8,6 +8,7 @@ export interface UserRole {
   source: 'user_roles' | 'product_license_assignments' | 'default';
   isRaynAdmin: boolean;
   isClientAdmin: boolean;
+  customer_id?: string; // Customer ID for client admins
 }
 
 /**
@@ -40,10 +41,13 @@ export async function getUserRole(userId: string): Promise<UserRole> {
       };
     }
 
-    // Next, check product_license_assignments for access_level
+    // Next, check product_license_assignments for access_level and get customer_id
     const { data: licenseAssignments, error: licenseError } = await supabase
       .from('product_license_assignments')
-      .select('access_level')
+      .select(`
+        access_level,
+        license_id
+      `)
       .eq('user_id', userId)
       .limit(1)
       .single();
@@ -52,13 +56,27 @@ export async function getUserRole(userId: string): Promise<UserRole> {
       console.error('Error checking product_license_assignments:', licenseError);
     }
 
-    // If user has access_level in product_license_assignments, use that
+    // If user has access_level in product_license_assignments, get customer_id
     if (licenseAssignments && licenseAssignments.access_level) {
+      let customer_id = undefined;
+      
+      // Fetch customer_id from the related license
+      if (licenseAssignments.license_id) {
+        const { data: license } = await supabase
+          .from('customer_product_licenses')
+          .select('customer_id')
+          .eq('id', licenseAssignments.license_id)
+          .single();
+        
+        customer_id = license?.customer_id;
+      }
+
       return {
         role: licenseAssignments.access_level,
         source: 'product_license_assignments',
         isRaynAdmin: false,
-        isClientAdmin: licenseAssignments.access_level === 'admin'
+        isClientAdmin: licenseAssignments.access_level === 'admin',
+        customer_id
       };
     }
 
