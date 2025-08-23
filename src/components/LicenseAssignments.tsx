@@ -342,7 +342,9 @@ export function LicenseAssignments() {
       {/* License Overview */}
       {customerLicenses.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {customerLicenses.map(license => (
+          {customerLicenses
+            .sort((a, b) => a.product_name.localeCompare(b.product_name))
+            .map(license => (
             <Card key={license.id}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
