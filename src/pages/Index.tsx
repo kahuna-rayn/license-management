@@ -8,32 +8,32 @@ import { Loader2, ArrowRight, Shield, Crown, Settings, User } from 'lucide-react
 import { RoleGuard, AdminOnly, ModeratorOrHigher } from '@/components/RoleGuard';
 import { UserRoleDisplay } from '@/components/UserRoleDisplay';
 import { useUserRole } from '@/hooks/useUserRole';
-
 const Index = () => {
-  const { user, loading } = useAuth();
-  const { userRole, isAdmin, isModerator } = useUserRole();
+  const {
+    user,
+    loading
+  } = useAuth();
+  const {
+    userRole,
+    isAdmin,
+    isModerator
+  } = useUserRole();
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
     }
   }, [user, loading, navigate]);
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+    return <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
           <p className="text-muted-foreground">Loading RAYN License Hub...</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+    return <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-elevated">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Access Required</CardTitle>
@@ -42,74 +42,23 @@ const Index = () => {
             <p className="text-muted-foreground">
               Please sign in to access the RAYN License Hub dashboard.
             </p>
-            <Button 
-              variant="enterprise" 
-              size="lg"
-              onClick={() => navigate('/auth')}
-              className="w-full"
-            >
+            <Button variant="enterprise" size="lg" onClick={() => navigate('/auth')} className="w-full">
               Go to Sign In
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <DashboardLayout>
+  return <DashboardLayout>
       <div className="space-y-6">
         {/* Role Information Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <UserRoleDisplay />
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Role-Based Access
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Crown className="h-4 w-4 text-yellow-600" />
-                  <span className="text-sm font-medium">Admin Access:</span>
-                  <span className={`text-sm ${isAdmin ? 'text-green-600' : 'text-red-600'}`}>
-                    {isAdmin ? '✓ Granted' : '✗ Denied'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Settings className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium">Moderator Access:</span>
-                  <span className={`text-sm ${isModerator ? 'text-green-600' : 'text-red-600'}`}>
-                    {isModerator ? '✓ Granted' : '✗ Denied'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm font-medium">User Access:</span>
-                  <span className="text-sm text-green-600">✓ Granted</span>
-                </div>
-              </div>
-              
-              {userRole && (
-                <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
-                  <p><strong>Role Source:</strong> {userRole.source}</p>
-                  <p><strong>Effective Role:</strong> {userRole.role}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        
 
         {/* Role-Based Content Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Admin Only Content */}
-          <AdminOnly
-            fallback={
-              <Card className="opacity-50">
+          <AdminOnly fallback={<Card className="opacity-50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Crown className="h-5 w-5" />
@@ -121,9 +70,7 @@ const Index = () => {
                     Admin access required to view this content.
                   </p>
                 </CardContent>
-              </Card>
-            }
-          >
+              </Card>}>
             <Card className="border-primary/20 bg-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -151,9 +98,7 @@ const Index = () => {
           </AdminOnly>
 
           {/* Moderator or Higher Content */}
-          <ModeratorOrHigher
-            fallback={
-              <Card className="opacity-50">
+          <ModeratorOrHigher fallback={<Card className="opacity-50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="h-5 w-5" />
@@ -165,9 +110,7 @@ const Index = () => {
                     Moderator access required to view this content.
                   </p>
                 </CardContent>
-              </Card>
-            }
-          >
+              </Card>}>
             <Card className="border-blue-200 bg-blue-50/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -224,8 +167,6 @@ const Index = () => {
         {/* Main Dashboard Overview */}
         <DashboardOverview />
       </div>
-    </DashboardLayout>
-  );
+    </DashboardLayout>;
 };
-
 export default Index;

@@ -3,13 +3,14 @@ import { getRoleDisplayName, getRoleDescription } from '@/lib/roles';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, User, Crown, Settings } from 'lucide-react';
-
 export function UserRoleDisplay() {
-  const { userRole, loading, error } = useUserRole();
-
+  const {
+    userRole,
+    loading,
+    error
+  } = useUserRole();
   if (loading) {
-    return (
-      <Card className="w-full max-w-md">
+    return <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
@@ -22,13 +23,10 @@ export function UserRoleDisplay() {
             <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
           </div>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
   if (error) {
-    return (
-      <Card className="w-full max-w-md border-destructive">
+    return <Card className="w-full max-w-md border-destructive">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <Shield className="h-5 w-5" />
@@ -38,13 +36,10 @@ export function UserRoleDisplay() {
         <CardContent>
           <p className="text-sm text-destructive">Error loading user role: {error}</p>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
   if (!userRole) {
-    return (
-      <Card className="w-full max-w-md">
+    return <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
@@ -54,10 +49,8 @@ export function UserRoleDisplay() {
         <CardContent>
           <p className="text-sm text-muted-foreground">No role information available</p>
         </CardContent>
-      </Card>
-    );
+      </Card>;
   }
-
   const getRoleIcon = () => {
     switch (userRole.role) {
       case 'admin':
@@ -70,7 +63,6 @@ export function UserRoleDisplay() {
         return <User className="h-4 w-4" />;
     }
   };
-
   const getSourceColor = () => {
     switch (userRole.source) {
       case 'user_roles':
@@ -83,7 +75,6 @@ export function UserRoleDisplay() {
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
-
   const getSourceDescription = () => {
     switch (userRole.source) {
       case 'user_roles':
@@ -96,34 +87,5 @@ export function UserRoleDisplay() {
         return 'Unknown Source';
     }
   };
-
-  return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          User Role
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-3">
-          {getRoleIcon()}
-          <div className="flex-1">
-            <h3 className="font-medium">{getRoleDisplayName(userRole.role)}</h3>
-            <p className="text-sm text-muted-foreground">
-              {getRoleDescription(userRole.role)}
-            </p>
-          </div>
-          <Badge variant="outline" className={getSourceColor()}>
-            {getSourceDescription()}
-          </Badge>
-        </div>
-        
-        <div className="text-xs text-muted-foreground">
-          <p><strong>Role Source:</strong> {userRole.source}</p>
-          <p><strong>Effective Role:</strong> {userRole.role}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  return;
 }
