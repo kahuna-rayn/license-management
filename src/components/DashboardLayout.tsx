@@ -62,7 +62,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="text-right">
                 <p className="text-sm font-medium text-primary-foreground">{user?.email}</p>
                 <Badge variant="secondary" className="text-xs">
-                  {loading ? 'Loading...' : userRole ? getRoleDisplayName(userRole.role) : 'User'}
+                  {loading ? 'Loading...' : userRole ? getRoleDisplayName(userRole.role, userRole) : 'User'}
                 </Badge>
               </div>
               <Button

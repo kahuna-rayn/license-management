@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/components/AuthProvider';
-import { getUserRole, hasRole, isAdmin, isModerator, type UserRole, type AppRole } from '@/lib/roles';
+import { getUserRole, hasRole, isAdmin, isModerator, isRaynAdmin, isClientAdmin, type UserRole, type AppRole } from '@/lib/roles';
 
 export function useUserRole() {
   const { user } = useAuth();
@@ -51,6 +51,20 @@ export function useUserRole() {
     return isModerator(user.id);
   }, [user?.id]);
 
+  // Check if user is RAYN admin
+  const checkIsRaynAdmin = useCallback(async (): Promise<boolean> => {
+    if (!user?.id) return false;
+    const role = await getUserRole(user.id);
+    return role.isRaynAdmin;
+  }, [user?.id]);
+
+  // Check if user is Client admin
+  const checkIsClientAdmin = useCallback(async (): Promise<boolean> => {
+    if (!user?.id) return false;
+    const role = await getUserRole(user.id);
+    return role.isClientAdmin;
+  }, [user?.id]);
+
   return {
     userRole,
     loading,
@@ -59,7 +73,11 @@ export function useUserRole() {
     checkRole,
     checkIsAdmin,
     checkIsModerator,
-    isAdmin: userRole?.role === 'admin',
+    checkIsRaynAdmin,
+    checkIsClientAdmin,
+    isAdmin: userRole?.isRaynAdmin || userRole?.isClientAdmin,
+    isRaynAdmin: userRole?.isRaynAdmin,
+    isClientAdmin: userRole?.isClientAdmin,
     isModerator: userRole?.role === 'moderator',
     isUser: userRole?.role === 'user',
   };

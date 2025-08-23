@@ -59,9 +59,14 @@ export function UserRoleDisplay() {
   }
 
   const getRoleIcon = () => {
+    if (userRole.isRaynAdmin) {
+      return <Crown className="h-4 w-4 text-yellow-600" />;
+    }
+    if (userRole.isClientAdmin) {
+      return <Crown className="h-4 w-4 text-blue-600" />;
+    }
+    
     switch (userRole.role) {
-      case 'admin':
-        return <Crown className="h-4 w-4" />;
       case 'moderator':
         return <Settings className="h-4 w-4" />;
       case 'user':
@@ -72,9 +77,14 @@ export function UserRoleDisplay() {
   };
 
   const getSourceColor = () => {
+    if (userRole.isRaynAdmin) {
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+    }
+    if (userRole.isClientAdmin) {
+      return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
+    
     switch (userRole.source) {
-      case 'user_roles':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'product_license_assignments':
         return 'bg-green-100 text-green-800 border-green-200';
       case 'default':
@@ -85,9 +95,14 @@ export function UserRoleDisplay() {
   };
 
   const getSourceDescription = () => {
+    if (userRole.isRaynAdmin) {
+      return 'RAYN Admin Role';
+    }
+    if (userRole.isClientAdmin) {
+      return 'Client Admin Role';
+    }
+    
     switch (userRole.source) {
-      case 'user_roles':
-        return 'RAYN Admin Role';
       case 'product_license_assignments':
         return 'Product License Assignment';
       case 'default':
@@ -109,9 +124,9 @@ export function UserRoleDisplay() {
         <div className="flex items-center gap-3">
           {getRoleIcon()}
           <div className="flex-1">
-            <h3 className="font-medium">{getRoleDisplayName(userRole.role)}</h3>
+            <h3 className="font-medium">{getRoleDisplayName(userRole.role, userRole)}</h3>
             <p className="text-sm text-muted-foreground">
-              {getRoleDescription(userRole.role)}
+              {getRoleDescription(userRole.role, userRole)}
             </p>
           </div>
           <Badge variant="outline" className={getSourceColor()}>
@@ -122,6 +137,8 @@ export function UserRoleDisplay() {
         <div className="text-xs text-muted-foreground">
           <p><strong>Role Source:</strong> {userRole.source}</p>
           <p><strong>Effective Role:</strong> {userRole.role}</p>
+          {userRole.isRaynAdmin && <p><strong>RAYN Admin:</strong> ✓ Yes</p>}
+          {userRole.isClientAdmin && <p><strong>Client Admin:</strong> ✓ Yes</p>}
         </div>
       </CardContent>
     </Card>

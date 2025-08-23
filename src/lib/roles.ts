@@ -6,6 +6,8 @@ export type AppRole = Database['public']['Enums']['app_role'];
 export interface UserRole {
   role: AppRole;
   source: 'user_roles' | 'product_license_assignments' | 'default';
+  isRaynAdmin: boolean;
+  isClientAdmin: boolean;
 }
 
 /**
@@ -32,7 +34,9 @@ export async function getUserRole(userId: string): Promise<UserRole> {
     if (userRoles && userRoles.role === 'admin') {
       return {
         role: 'admin',
-        source: 'user_roles'
+        source: 'user_roles',
+        isRaynAdmin: true,
+        isClientAdmin: false
       };
     }
 
@@ -52,14 +56,18 @@ export async function getUserRole(userId: string): Promise<UserRole> {
     if (licenseAssignments && licenseAssignments.access_level) {
       return {
         role: licenseAssignments.access_level,
-        source: 'product_license_assignments'
+        source: 'product_license_assignments',
+        isRaynAdmin: false,
+        isClientAdmin: licenseAssignments.access_level === 'admin'
       };
     }
 
     // Default to 'user' if neither record exists
     return {
       role: 'user',
-      source: 'default'
+      source: 'default',
+      isRaynAdmin: false,
+      isClientAdmin: false
     };
 
   } catch (error) {
@@ -67,7 +75,9 @@ export async function getUserRole(userId: string): Promise<UserRole> {
     // Return default role on error
     return {
       role: 'user',
-      source: 'default'
+      source: 'default',
+      isRaynAdmin: false,
+      isClientAdmin: false
     };
   }
 }
@@ -81,10 +91,27 @@ export async function hasRole(userId: string, requiredRole: AppRole): Promise<bo
 }
 
 /**
- * Check if user is an admin (either RAYN admin or from product license)
+ * Check if user is a RAYN admin (from user_roles table)
+ */
+export async function isRaynAdmin(userId: string): Promise<boolean> {
+  const userRole = await getUserRole(userId);
+  return userRole.isRaynAdmin;
+}
+
+/**
+ * Check if user is a Client admin (from product_license_assignments table)
+ */
+export async function isClientAdmin(userId: string): Promise<boolean> {
+  const userRole = await getUserRole(userId);
+  return userRole.isClientAdmin;
+}
+
+/**
+ * Check if user is any type of admin (RAYN or Client)
  */
 export async function isAdmin(userId: string): Promise<boolean> {
-  return hasRole(userId, 'admin');
+  const userRole = await getUserRole(userId);
+  return userRole.isRaynAdmin || userRole.isClientAdmin;
 }
 
 /**
@@ -95,12 +122,23 @@ export async function isModerator(userId: string): Promise<boolean> {
 }
 
 /**
- * Get role display name
+ * Get role display name with proper differentiation
  */
-export function getRoleDisplayName(role: AppRole): string {
+export function getRoleDisplayName(role: AppRole, userRole?: UserRole): string {
+  // If we have userRole context, use it to differentiate admin types
+  if (userRole) {
+    if (userRole.isRaynAdmin) {
+      return 'RAYN Admin';
+    }
+    if (userRole.isClientAdmin) {
+      return 'Client Admin';
+    }
+  }
+
+  // Fallback to basic role names
   switch (role) {
     case 'admin':
-      return 'RAYN Admin';
+      return 'Admin'; // Generic admin if no context
     case 'moderator':
       return 'Moderator';
     case 'user':
@@ -111,12 +149,21 @@ export function getRoleDisplayName(role: AppRole): string {
 }
 
 /**
- * Get role description
+ * Get role description with proper differentiation
  */
-export function getRoleDescription(role: AppRole): string {
+export function getRoleDescription(role: AppRole, userRole?: UserRole): string {
+  if (userRole) {
+    if (userRole.isRaynAdmin) {
+      return 'Full system access with RAYN administrative privileges';
+    }
+    if (userRole.isClientAdmin) {
+      return 'Client-level administrative access for license management';
+    }
+  }
+
   switch (role) {
     case 'admin':
-      return 'Full system access with administrative privileges';
+      return 'Administrative access';
     case 'moderator':
       return 'Enhanced access with moderation capabilities';
     case 'user':

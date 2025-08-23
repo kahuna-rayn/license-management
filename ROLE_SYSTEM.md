@@ -6,11 +6,12 @@ This document describes the role-based access control (RBAC) system implemented 
 
 ## Role Hierarchy
 
-The system implements a three-tier role hierarchy:
+The system implements a four-tier role hierarchy:
 
-1. **RAYN Admin** (`admin`) - Full system access with administrative privileges
-2. **Moderator** (`moderator`) - Enhanced access with moderation capabilities  
-3. **User** (`user`) - Standard user access (default)
+1. **RAYN Admin** (`admin`) - Full system access with RAYN administrative privileges
+2. **Client Admin** (`admin`) - Client-level administrative access for license management
+3. **Moderator** (`moderator`) - Enhanced access with moderation capabilities  
+4. **User** (`user`) - Standard user access (default)
 
 ## Role Assignment Logic
 
@@ -22,13 +23,19 @@ User roles are determined using the following priority-based logic:
 - **Result**: User becomes RAYN Admin with full system access
 - **Priority**: Highest
 
-### 2. Product License Assignment
+### 2. Client Admin Check
 - **Source**: `product_license_assignments` table
-- **Condition**: User has an `access_level` record
-- **Result**: User gets the role specified in `access_level` column
+- **Condition**: `access_level = 'admin'`
+- **Result**: User becomes Client Admin with client-level administrative access
 - **Priority**: Medium
 
-### 3. Default User Role
+### 3. Product License Assignment
+- **Source**: `product_license_assignments` table
+- **Condition**: User has an `access_level` record (not admin)
+- **Result**: User gets the role specified in `access_level` column
+- **Priority**: Low
+
+### 4. Default User Role
 - **Source**: System default
 - **Condition**: No records found in either table
 - **Result**: User gets standard 'user' role
@@ -102,7 +109,8 @@ function CustomComponent() {
 Navigate to `/role-test` to see a comprehensive role system test page.
 
 ### 2. Test Different Scenarios
-- **Admin User**: Add a record to `user_roles` table with `app_role = 'admin'`
+- **RAYN Admin User**: Add a record to `user_roles` table with `app_role = 'admin'`
+- **Client Admin User**: Add a record to `product_license_assignments` table with `access_level = 'admin'`
 - **Moderator User**: Add a record to `product_license_assignments` table with `access_level = 'moderator'`
 - **Regular User**: No records in either table (defaults to 'user')
 
@@ -117,8 +125,9 @@ The test page shows:
 
 The system provides visual indicators for role sources:
 
-- **🔵 RAYN Admin Role** - Blue badge for admin roles from `user_roles` table
-- **🟢 Product License Assignment** - Green badge for roles from `product_license_assignments` table  
+- **🟡 RAYN Admin Role** - Yellow badge for RAYN admin roles from `user_roles` table
+- **🔵 Client Admin Role** - Blue badge for client admin roles from `product_license_assignments` table
+- **🟢 Product License Assignment** - Green badge for other roles from `product_license_assignments` table  
 - **⚪ Default User Role** - Gray badge for default user roles
 
 ## Security Considerations

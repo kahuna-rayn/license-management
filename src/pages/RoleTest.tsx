@@ -187,15 +187,26 @@ export default function RoleTest() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 border rounded-lg">
                   <Crown className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
                   <h3 className="font-semibold">RAYN Admin</h3>
                   <p className="text-sm text-muted-foreground">
-                    Full system access with administrative privileges
+                    Full system access with RAYN administrative privileges
                   </p>
                   <p className="text-xs text-muted-foreground mt-2">
                     Source: user_roles table (app_role = 'admin')
+                  </p>
+                </div>
+                
+                <div className="text-center p-4 border rounded-lg">
+                  <Crown className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <h3 className="font-semibold">Client Admin</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Client-level administrative access for license management
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Source: product_license_assignments table (access_level = 'admin')
                   </p>
                 </div>
                 
@@ -206,7 +217,7 @@ export default function RoleTest() {
                     Enhanced access with moderation capabilities
                   </p>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Source: product_license_assignments table
+                    Source: product_license_assignments table (access_level = 'moderator')
                   </p>
                 </div>
                 
@@ -226,7 +237,8 @@ export default function RoleTest() {
                 <h4 className="font-semibold mb-2">Role Assignment Logic:</h4>
                 <ol className="text-sm space-y-1 list-decimal list-inside">
                   <li>Check <code>user_roles</code> table for <code>app_role = 'admin'</code> → RAYN Admin</li>
-                  <li>Check <code>product_license_assignments</code> table for <code>access_level</code> → Use that role</li>
+                  <li>Check <code>product_license_assignments</code> table for <code>access_level = 'admin'</code> → Client Admin</li>
+                  <li>Check <code>product_license_assignments</code> table for <code>access_level = 'moderator'</code> → Moderator</li>
                   <li>Default to <code>'user'</code> if neither record exists</li>
                 </ol>
               </div>
