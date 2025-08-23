@@ -267,36 +267,6 @@ export function DashboardOverview() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="card-gradient hover:shadow-elevated transition-all duration-300 cursor-pointer">
-            <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 text-accent-blue mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Assign Licenses</h3>
-              <p className="text-sm text-muted-foreground">Allocate software licenses to team members</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="card-gradient hover:shadow-elevated transition-all duration-300 cursor-pointer">
-            <CardContent className="p-6 text-center">
-              <BarChart3 className="h-12 w-12 text-accent-green mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">View Reports</h3>
-              <p className="text-sm text-muted-foreground">Generate license usage and compliance reports</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="card-gradient hover:shadow-elevated transition-all duration-300 cursor-pointer">
-            <CardContent className="p-6 text-center">
-              <Building2 className="h-12 w-12 text-accent-orange mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Manage Departments</h3>
-              <p className="text-sm text-muted-foreground">Organize license assignments by department</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 }
