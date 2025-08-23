@@ -9,9 +9,7 @@ import {
   Shield, 
   Users, 
   BarChart3, 
-  Settings,
   Building2,
-  Monitor,
   AlertTriangle,
   TrendingUp,
   Clock
@@ -109,28 +107,7 @@ export function DashboardLayout({ children, activeTab = 'dashboard', onTabChange
                 License Assignments
               </button>
             )}
-            <button 
-              onClick={() => onTabChange?.('software-inventory')}
-              className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'software-inventory' 
-                  ? 'text-primary border-b-2 border-primary' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Monitor className="h-4 w-4" />
-              Software Inventory
-            </button>
-            <button 
-              onClick={() => onTabChange?.('settings')}
-              className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'settings' 
-                  ? 'text-primary border-b-2 border-primary' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Settings className="h-4 w-4" />
-              Settings
-            </button>
+
           </div>
         </div>
       </nav>
