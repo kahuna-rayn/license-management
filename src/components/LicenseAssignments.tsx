@@ -352,6 +352,7 @@ export function LicenseAssignments() {
                     <p className="font-medium">{license.product_name}</p>
                     <p className="text-sm text-muted-foreground">
                       {license.used_seats} / {license.seats} seats used
+                      Expires: {license.end_date}
                     </p>
                   </div>
                   <Badge variant={license.used_seats >= license.seats ? "destructive" : "secondary"}>
