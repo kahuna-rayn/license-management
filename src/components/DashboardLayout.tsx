@@ -17,6 +17,7 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { useUserRole } from '@/hooks/useUserRole';
 import { getRoleDisplayName } from '@/lib/roles';
+import { DebugRoleToggle } from '@/components/DebugRoleToggle';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -26,7 +27,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, activeTab = 'dashboard', onTabChange }: DashboardLayoutProps) {
   const { user, signOut } = useAuth();
-  const { userRole, loading, isRaynAdmin, isClientAdmin } = useUserRole();
+  const { userRole, actualUserRole, loading, isRaynAdmin, isClientAdmin, isDebugMode } = useUserRole();
 
   const handleSignOut = async () => {
     try {
@@ -59,10 +60,15 @@ export function DashboardLayout({ children, activeTab = 'dashboard', onTabChange
             </div>
             
             <div className="flex items-center gap-4">
+              {actualUserRole?.isRaynAdmin && (
+                <DebugRoleToggle />
+              )}
+              
               <div className="text-right">
                 <p className="text-sm font-medium text-primary-foreground">{user?.email}</p>
                 <Badge variant="secondary" className="text-xs">
                   {loading ? 'Loading...' : userRole ? getRoleDisplayName(userRole.role, userRole) : 'User'}
+                  {isDebugMode && ' (Preview)'}
                 </Badge>
               </div>
               <Button
