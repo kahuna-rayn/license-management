@@ -260,7 +260,7 @@ export function ClientDashboard() {
             <CardContent>
               <div className="space-y-6">
                  {/* Pie Chart and Overview */}
-                 <div className="flex items-start gap-6">
+                 <div className="flex items-center gap-6">
                    {/* Pie Chart */}
                    <div className="h-64 flex-1">
                      {metrics && (
