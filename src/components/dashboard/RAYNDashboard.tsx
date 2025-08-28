@@ -414,13 +414,36 @@ export function RAYNDashboard() {
                           <ChartTooltip>
                             <ChartTooltipContent />
                           </ChartTooltip>
-                          <ChartLegend>
-                            <ChartLegendContent />
-                          </ChartLegend>
                         </PieChart>
                       </ChartContainer>
                     </div>
                   )}
+                </div>
+                
+                {/* Category Overview */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
+                  <div className="text-center p-4 rounded-lg bg-status-danger/10">
+                    <p className="text-2xl font-bold text-status-danger">{metrics.expiringLicenses.overdue}</p>
+                    <p className="text-sm text-muted-foreground">Overdue</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-status-warning/10">
+                    <p className="text-2xl font-bold text-status-warning">{metrics.expiringLicenses.days30}</p>
+                    <p className="text-sm text-muted-foreground">30 Days</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-status-info/10">
+                    <p className="text-2xl font-bold text-status-info">{metrics.expiringLicenses.days60}</p>
+                    <p className="text-sm text-muted-foreground">60 Days</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-accent-blue/10">
+                    <p className="text-2xl font-bold text-accent-blue">{metrics.expiringLicenses.days90}</p>
+                    <p className="text-sm text-muted-foreground">90 Days</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-status-success/10">
+                    <p className="text-2xl font-bold text-status-success">
+                      {Math.max(0, metrics.licensedSeats - (metrics.expiringLicenses.overdue + metrics.expiringLicenses.days30 + metrics.expiringLicenses.days60 + metrics.expiringLicenses.days90))}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Active</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
