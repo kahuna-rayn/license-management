@@ -13,6 +13,8 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useUserRole } from '@/hooks/useUserRole';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 interface DashboardLevel {
   level: 2 | 3 | 4;
@@ -256,22 +258,86 @@ export function ClientDashboard() {
               <CardTitle>License Expiration Timeline</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 rounded-lg bg-status-danger/10">
-                  <p className="text-2xl font-bold text-status-danger">{metrics.expiringLicenses.overdue}</p>
-                  <p className="text-sm text-muted-foreground">Overdue</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Existing Grid Layout */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 rounded-lg bg-status-danger/10">
+                    <p className="text-2xl font-bold text-status-danger">{metrics.expiringLicenses.overdue}</p>
+                    <p className="text-sm text-muted-foreground">Overdue</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-status-warning/10">
+                    <p className="text-2xl font-bold text-status-warning">{metrics.expiringLicenses.days30}</p>
+                    <p className="text-sm text-muted-foreground">30 Days</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-status-info/10">
+                    <p className="text-2xl font-bold text-status-info">{metrics.expiringLicenses.days60}</p>
+                    <p className="text-sm text-muted-foreground">60 Days</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-status-success/10">
+                    <p className="text-2xl font-bold text-status-success">{metrics.expiringLicenses.days90}</p>
+                    <p className="text-sm text-muted-foreground">90 Days</p>
+                  </div>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-status-warning/10">
-                  <p className="text-2xl font-bold text-status-warning">{metrics.expiringLicenses.days30}</p>
-                  <p className="text-sm text-muted-foreground">30 Days</p>
-                </div>
-                <div className="text-center p-4 rounded-lg bg-status-info/10">
-                  <p className="text-2xl font-bold text-status-info">{metrics.expiringLicenses.days60}</p>
-                  <p className="text-sm text-muted-foreground">60 Days</p>
-                </div>
-                <div className="text-center p-4 rounded-lg bg-status-success/10">
-                  <p className="text-2xl font-bold text-status-success">{metrics.expiringLicenses.days90}</p>
-                  <p className="text-sm text-muted-foreground">90 Days</p>
+
+                {/* Pie Chart */}
+                <div className="h-64">
+                  <ChartContainer
+                    config={{
+                      overdue: {
+                        label: "Overdue",
+                        color: "hsl(var(--status-danger))",
+                      },
+                      days30: {
+                        label: "30 Days",
+                        color: "hsl(var(--status-warning))",
+                      },
+                      days60: {
+                        label: "60 Days",
+                        color: "hsl(var(--status-info))",
+                      },
+                      days90: {
+                        label: "90 Days",
+                        color: "hsl(var(--status-success))",
+                      },
+                    }}
+                  >
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "overdue", value: metrics.expiringLicenses.overdue },
+                          { name: "days30", value: metrics.expiringLicenses.days30 },
+                          { name: "days60", value: metrics.expiringLicenses.days60 },
+                          { name: "days90", value: metrics.expiringLicenses.days90 },
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {[
+                          { name: "overdue", value: metrics.expiringLicenses.overdue },
+                          { name: "days30", value: metrics.expiringLicenses.days30 },
+                          { name: "days60", value: metrics.expiringLicenses.days60 },
+                          { name: "days90", value: metrics.expiringLicenses.days90 },
+                        ].map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={
+                              index === 0 ? "hsl(var(--status-danger))" :
+                              index === 1 ? "hsl(var(--status-warning))" :
+                              index === 2 ? "hsl(var(--status-info))" :
+                              "hsl(var(--status-success))"
+                            }
+                          />
+                        ))}
+                      </Pie>
+                      <ChartTooltip>
+                        <ChartTooltipContent />
+                      </ChartTooltip>
+                    </PieChart>
+                  </ChartContainer>
                 </div>
               </div>
             </CardContent>
