@@ -351,70 +351,76 @@ export function RAYNDashboard() {
                 {/* Pie Chart */}
                 <div className="h-64 w-full">
                   {metrics && (
-                    <ChartContainer
-                      config={{
-                        overdue: {
-                          label: "Overdue",
-                          color: "hsl(var(--status-danger))",
-                        },
-                        days30: {
-                          label: "30 Days",
-                          color: "hsl(var(--status-warning))",
-                        },
-                        days60: {
-                          label: "60 Days",
-                          color: "hsl(var(--status-info))",
-                        },
-                        days90: {
-                          label: "90 Days",
-                          color: "hsl(var(--status-success))",
-                        },
-                        active: {
-                          label: "Active",
-                          color: "hsl(var(--primary))",
-                        },
-                      }}
-                    >
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { name: "overdue", value: metrics.expiringLicenses.overdue },
-                            { name: "days30", value: metrics.expiringLicenses.days30 },
-                            { name: "days60", value: metrics.expiringLicenses.days60 },
-                            { name: "days90", value: metrics.expiringLicenses.days90 },
-                            { name: "active", value: Math.max(0, metrics.licensedSeats - (metrics.expiringLicenses.overdue + metrics.expiringLicenses.days30 + metrics.expiringLicenses.days60 + metrics.expiringLicenses.days90)) },
-                          ].filter(item => item.value > 0)}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={40}
-                          outerRadius={80}
-                          paddingAngle={2}
-                          dataKey="value"
-                        >
-                          {[
-                            { name: "overdue", value: metrics.expiringLicenses.overdue },
-                            { name: "days30", value: metrics.expiringLicenses.days30 },
-                            { name: "days60", value: metrics.expiringLicenses.days60 },
-                            { name: "days90", value: metrics.expiringLicenses.days90 },
-                            { name: "active", value: Math.max(0, metrics.licensedSeats - (metrics.expiringLicenses.overdue + metrics.expiringLicenses.days30 + metrics.expiringLicenses.days60 + metrics.expiringLicenses.days90)) },
-                          ].filter(item => item.value > 0).map((entry, index) => (
-                            <Cell 
-                              key={`cell-${index}`} 
-                              fill={
-                                entry.name === "overdue" ? "hsl(var(--status-danger))" :
-                                entry.name === "days30" ? "hsl(var(--status-warning))" :
-                                entry.name === "days60" ? "hsl(var(--status-info))" :
-                                entry.name === "days90" ? "hsl(var(--status-success))" :
-                                "hsl(var(--primary))"
-                              }
-                            />
-                          ))}
-                        </Pie>
-                        <ChartTooltip>
-                          <ChartTooltipContent />
-                        </ChartTooltip>
-                      </PieChart>
-                    </ChartContainer>
+                    <div className="w-full h-full">
+                      <ChartContainer
+                        config={{
+                          overdue: {
+                            label: "Overdue",
+                            color: "hsl(var(--status-danger))",
+                          },
+                          days30: {
+                            label: "30 Days",
+                            color: "hsl(var(--status-warning))",
+                          },
+                          days60: {
+                            label: "60 Days",
+                            color: "hsl(var(--status-info))",
+                          },
+                          days90: {
+                            label: "90 Days",
+                            color: "hsl(var(--accent-blue))",
+                          },
+                          active: {
+                            label: "Active",
+                            color: "hsl(var(--status-success))",
+                          },
+                        }}
+                        className="w-full h-full"
+                      >
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: "overdue", value: metrics.expiringLicenses.overdue },
+                              { name: "days30", value: metrics.expiringLicenses.days30 },
+                              { name: "days60", value: metrics.expiringLicenses.days60 },
+                              { name: "days90", value: metrics.expiringLicenses.days90 },
+                              { name: "active", value: Math.max(0, metrics.licensedSeats - (metrics.expiringLicenses.overdue + metrics.expiringLicenses.days30 + metrics.expiringLicenses.days60 + metrics.expiringLicenses.days90)) },
+                            ].filter(item => item.value > 0)}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={40}
+                            outerRadius={80}
+                            paddingAngle={2}
+                            dataKey="value"
+                          >
+                            {[
+                              { name: "overdue", value: metrics.expiringLicenses.overdue },
+                              { name: "days30", value: metrics.expiringLicenses.days30 },
+                              { name: "days60", value: metrics.expiringLicenses.days60 },
+                              { name: "days90", value: metrics.expiringLicenses.days90 },
+                              { name: "active", value: Math.max(0, metrics.licensedSeats - (metrics.expiringLicenses.overdue + metrics.expiringLicenses.days30 + metrics.expiringLicenses.days60 + metrics.expiringLicenses.days90)) },
+                            ].filter(item => item.value > 0).map((entry, index) => (
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={
+                                  entry.name === "overdue" ? "hsl(var(--status-danger))" :
+                                  entry.name === "days30" ? "hsl(var(--status-warning))" :
+                                  entry.name === "days60" ? "hsl(var(--status-info))" :
+                                  entry.name === "days90" ? "hsl(var(--accent-blue))" :
+                                  "hsl(var(--status-success))"
+                                }
+                              />
+                            ))}
+                          </Pie>
+                          <ChartTooltip>
+                            <ChartTooltipContent />
+                          </ChartTooltip>
+                          <ChartLegend>
+                            <ChartLegendContent />
+                          </ChartLegend>
+                        </PieChart>
+                      </ChartContainer>
+                    </div>
                   )}
                 </div>
               </div>
