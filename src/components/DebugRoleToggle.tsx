@@ -152,7 +152,9 @@ export function DebugRoleToggle() {
             disabled={loadingCustomers}
           >
             <SelectTrigger className="w-48 h-8">
-              <SelectValue placeholder={loadingCustomers ? "Loading..." : "Select organization..."} />
+              <SelectValue placeholder={loadingCustomers ? "Loading..." : "Select organization..."}>
+                {selectedCustomer ? selectedCustomer.short_name : (loadingCustomers ? "Loading..." : "Select organization...")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {customers.map((customer) => (
