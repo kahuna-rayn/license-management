@@ -301,7 +301,6 @@ export function ClientDashboard() {
                             cy="50%"
                             innerRadius={40}
                             outerRadius={80}
-                            paddingAngle={2}
                             dataKey="value"
                           >
                             {[
