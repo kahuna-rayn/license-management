@@ -360,11 +360,11 @@ export function RAYNDashboard() {
                           },
                           days30: {
                             label: "30 Days",
-                            color: "hsl(var(--status-warning))",
+                            color: "hsl(var(--accent-red))",
                           },
                           days60: {
                             label: "60 Days",
-                            color: "hsl(var(--status-info))",
+                            color: "hsl(var(--accent-orange))",
                           },
                           days90: {
                             label: "90 Days",
@@ -403,8 +403,8 @@ export function RAYNDashboard() {
                                 key={`cell-${index}`} 
                                 fill={
                                   entry.name === "overdue" ? "hsl(var(--status-danger))" :
-                                  entry.name === "days30" ? "hsl(var(--status-warning))" :
-                                  entry.name === "days60" ? "hsl(var(--status-info))" :
+                                  entry.name === "days30" ? "hsl(var(--accent-red))" :
+                                  entry.name === "days60" ? "hsl(var(--accent-orange))" :
                                   entry.name === "days90" ? "hsl(var(--accent-blue))" :
                                   "hsl(var(--status-success))"
                                 }

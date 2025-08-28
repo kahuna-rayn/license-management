@@ -271,11 +271,11 @@ export function ClientDashboard() {
                           },
                           days30: {
                             label: "30 Days",
-                            color: "hsl(var(--status-warning))",
+                            color: "hsl(var(--accent-red))",
                           },
                           days60: {
                             label: "60 Days",
-                            color: "hsl(var(--status-info))",
+                            color: "hsl(var(--accent-orange))",
                           },
                           days90: {
                             label: "90 Days",
@@ -314,8 +314,8 @@ export function ClientDashboard() {
                                 key={`cell-${index}`} 
                                 fill={
                                   entry.name === "overdue" ? "hsl(var(--status-danger))" :
-                                  entry.name === "days30" ? "hsl(var(--status-warning))" :
-                                  entry.name === "days60" ? "hsl(var(--status-info))" :
+                                  entry.name === "days30" ? "hsl(var(--accent-red))" :
+                                  entry.name === "days60" ? "hsl(var(--accent-orange))" :
                                   entry.name === "days90" ? "hsl(var(--accent-blue))" :
                                   "hsl(var(--status-success))"
                                 }
@@ -337,12 +337,12 @@ export function ClientDashboard() {
                     <p className="text-2xl font-bold text-status-danger">{metrics.expiringLicenses.overdue}</p>
                     <p className="text-sm text-muted-foreground">Overdue</p>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-status-warning/10">
-                    <p className="text-2xl font-bold text-status-warning">{metrics.expiringLicenses.days30}</p>
+                  <div className="text-center p-4 rounded-lg bg-accent-red/10">
+                    <p className="text-2xl font-bold text-accent-red">{metrics.expiringLicenses.days30}</p>
                     <p className="text-sm text-muted-foreground">30 Days</p>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-status-info/10">
-                    <p className="text-2xl font-bold text-status-info">{metrics.expiringLicenses.days60}</p>
+                  <div className="text-center p-4 rounded-lg bg-accent-orange/10">
+                    <p className="text-2xl font-bold text-accent-orange">{metrics.expiringLicenses.days60}</p>
                     <p className="text-sm text-muted-foreground">60 Days</p>
                   </div>
                   <div className="text-center p-4 rounded-lg bg-accent-blue/10">
