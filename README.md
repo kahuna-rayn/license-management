@@ -72,5 +72,12 @@ To connect a domain, navigate to Project > Settings > Domains and click Connect 
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
 
+## Current Limitations
 
-test
+Since the database currently doesn't have all the requested information for the organizations and licenses, some of the information in the dashboard is mocked. This includes:
+
+- Organizing by industry in the drilldowns (currently all organizations are in Technology)
+- Locations for clients
+- Departments for clients
+
+Also, individual license assignments to users are not implemented since the table product_license_assignments is currently empty.  
