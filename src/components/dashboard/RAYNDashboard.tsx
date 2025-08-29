@@ -32,6 +32,7 @@ interface LicenseMetrics {
     days30: number;
     days60: number;
     days90: number;
+    active: number;
   };
   licensesByIndustry: Array<{
     industry: string;
@@ -120,16 +121,20 @@ export function RAYNDashboard() {
     const totalSeats = licenses?.reduce((sum, l) => sum + (l.seats || 0), 0) || 0;
 
     const expiring = licenses?.reduce((acc, license) => {
-      if (!license.end_date) return acc;
+      if (!license.end_date) {
+        acc.active += license.seats || 0;
+        return acc;
+      }
       const endDate = new Date(license.end_date);
       
       if (endDate < now) acc.overdue++;
       else if (endDate <= thirtyDays) acc.days30++;
       else if (endDate <= sixtyDays) acc.days60++;
       else if (endDate <= ninetyDays) acc.days90++;
+      else acc.active += license.seats || 0;
       
       return acc;
-    }, { overdue: 0, days30: 0, days60: 0, days90: 0 }) || { overdue: 0, days30: 0, days60: 0, days90: 0 };
+    }, { overdue: 0, days30: 0, days60: 0, days90: 0, active: 0 }) || { overdue: 0, days30: 0, days60: 0, days90: 0, active: 0 };
 
     // Mock industry data for now
     const licensesByIndustry = [
@@ -345,7 +350,11 @@ export function RAYNDashboard() {
               <CardTitle>License Expiration Timeline</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="text-center p-4 rounded-lg bg-primary/10">
+                  <p className="text-2xl font-bold text-primary">{metrics.expiringLicenses.active}</p>
+                  <p className="text-sm text-muted-foreground">Active</p>
+                </div>
                 <div className="text-center p-4 rounded-lg bg-status-danger/10">
                   <p className="text-2xl font-bold text-status-danger">{metrics.expiringLicenses.overdue}</p>
                   <p className="text-sm text-muted-foreground">Overdue</p>
