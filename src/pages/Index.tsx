@@ -75,7 +75,7 @@ const Index = () => {
             <div className="space-y-6">
               {/* License Information */}
               <LicenseInformation />
-              {/* Staff License Summary */}
+              {/* Staff Licenses */}
               <StaffLicenseSummary />
             </div>
           );
