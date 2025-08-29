@@ -20,8 +20,11 @@ interface DashboardLevel {
   level: 1 | 2 | 3 | 4;
   title: string;
   customerId?: string;
+  customerName?: string;
   locationId?: string;
+  locationName?: string;
   departmentId?: string;
+  departmentName?: string;
 }
 
 interface LicenseMetrics {
@@ -268,8 +271,9 @@ export function RAYNDashboard() {
           // We came from industry drill-down, go back to organization level
           setCurrentLevel({ 
             level: 2, 
-            title: `Organizations - ${currentLevel.customerId}`,
-            customerId: currentLevel.customerId 
+            title: `Organizations - ${currentLevel.customerName || currentLevel.customerId}`,
+            customerId: currentLevel.customerId,
+            customerName: currentLevel.customerName
           });
         } else {
           setCurrentLevel({ level: 2, title: 'Client Overview' });
@@ -278,8 +282,11 @@ export function RAYNDashboard() {
       case 4:
         setCurrentLevel({ 
           level: 3, 
-          title: `Location Overview - ${currentLevel.customerId}`,
-          customerId: currentLevel.customerId 
+          title: `Location Overview - ${currentLevel.customerName || currentLevel.customerId}`,
+          customerId: currentLevel.customerId,
+          customerName: currentLevel.customerName,
+          locationId: currentLevel.locationId,
+          locationName: currentLevel.locationName
         });
         break;
     }
@@ -508,23 +515,6 @@ export function RAYNDashboard() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Navigation to Industry Drill Down */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Drill Down by Industry</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => navigateToLevel({ level: 2, title: 'Industry Overview', customerId: 'all' })}
-                className="w-full"
-                variant="outline"
-              >
-                <Briefcase className="h-4 w-4 mr-2" />
-                View by Industry
-              </Button>
-            </CardContent>
-          </Card>
         </>
       )}
 
@@ -548,14 +538,16 @@ export function RAYNDashboard() {
                       navigateToLevel({
                         level: 2,
                         title: `Organizations - ${item.name}`,
-                        customerId: item.industry
+                        customerId: item.industry,
+                        customerName: item.name
                       });
                     } else {
                       // Clicking on organization, navigate to locations
                       navigateToLevel({
                         level: 3,
                         title: `Locations - ${item.name}`,
-                        customerId: item.id
+                        customerId: item.id,
+                        customerName: item.name
                       });
                     }
                   }}
@@ -613,7 +605,9 @@ export function RAYNDashboard() {
                     level: 4,
                     title: `Departments - ${location.name}`,
                     customerId: currentLevel.customerId,
-                    locationId: location.id
+                    customerName: currentLevel.customerName,
+                    locationId: location.id,
+                    locationName: location.name
                   })}
                 >
                   <div className="flex items-center gap-3">
