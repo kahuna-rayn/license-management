@@ -196,7 +196,36 @@ export function RAYNDashboard() {
       if (isExpiring) client.expiring++;
     });
 
-    setClientData(Array.from(clientMap.values()));
+    // Filter by industry if we're in industry drill-down mode
+    let filteredClients = Array.from(clientMap.values());
+    if (currentLevel.customerId && currentLevel.customerId !== 'all') {
+      // In this case, customerId contains the industry name
+      filteredClients = filteredClients.filter(client => client.industry === currentLevel.customerId);
+    }
+    
+    // If we're showing all industries, we need to group by industry
+    if (currentLevel.customerId === 'all') {
+      const industryMap = new Map();
+      filteredClients.forEach(client => {
+        if (!industryMap.has(client.industry)) {
+          industryMap.set(client.industry, {
+            id: client.industry,
+            name: client.industry,
+            seats: 0,
+            expiring: 0,
+            industry: client.industry,
+            count: 0
+          });
+        }
+        const industry = industryMap.get(client.industry);
+        industry.seats += client.seats;
+        industry.expiring += client.expiring;
+        industry.count += 1;
+      });
+      filteredClients = Array.from(industryMap.values());
+    }
+
+    setClientData(filteredClients);
   };
 
   const fetchLocationData = async (customerId: string) => {
@@ -225,10 +254,26 @@ export function RAYNDashboard() {
   const goBack = () => {
     switch (currentLevel.level) {
       case 2:
-        setCurrentLevel({ level: 1, title: 'RAYN Overview' });
+        // Check if we're in industry drill-down mode
+        if (currentLevel.customerId === 'all') {
+          setCurrentLevel({ level: 1, title: 'RAYN Overview' });
+        } else {
+          // We're showing organizations in a specific industry, go back to industry overview
+          setCurrentLevel({ level: 2, title: 'Industry Overview', customerId: 'all' });
+        }
         break;
       case 3:
-        setCurrentLevel({ level: 2, title: 'Client Overview' });
+        // Check if we came from industry drill-down or regular client view
+        if (currentLevel.customerId && currentLevel.customerId !== 'all') {
+          // We came from industry drill-down, go back to organization level
+          setCurrentLevel({ 
+            level: 2, 
+            title: `Organizations - ${currentLevel.customerId}`,
+            customerId: currentLevel.customerId 
+          });
+        } else {
+          setCurrentLevel({ level: 2, title: 'Client Overview' });
+        }
         break;
       case 4:
         setCurrentLevel({ 
@@ -279,7 +324,7 @@ export function RAYNDashboard() {
             <p className="text-muted-foreground">
               Level {currentLevel.level} - {
                 currentLevel.level === 1 ? 'RAYN Overview' :
-                currentLevel.level === 2 ? 'Client Level' :
+                currentLevel.level === 2 ? (currentLevel.customerId === 'all' ? 'Industry Level' : 'Organization Level') :
                 currentLevel.level === 3 ? 'Location Level' :
                 'Department Level'
               }
@@ -425,67 +470,125 @@ export function RAYNDashboard() {
             </CardContent>
           </Card>
 
-          {/* Industry Breakdown */}
+          {/* Drill Down by Industry */}
           <Card>
             <CardHeader>
-              <CardTitle>Licenses by Industry</CardTitle>
+              <CardTitle>Drill Down by Industry</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {metrics.licensesByIndustry.map((industry, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 hover:bg-secondary cursor-pointer transition-colors"
+                    onClick={() => navigateToLevel({
+                      level: 2,
+                      title: `Organizations - ${industry.industry}`,
+                      customerId: industry.industry // Using industry as identifier for this level
+                    })}
+                  >
                     <div className="flex items-center gap-3">
-                      <Briefcase className="h-5 w-5 text-muted-foreground" />
+                      <Briefcase className="h-6 w-6 text-primary" />
                       <div>
                         <p className="font-medium">{industry.industry}</p>
-                        <p className="text-sm text-muted-foreground">{industry.count} clients</p>
+                        <p className="text-sm text-muted-foreground">{industry.count} organizations</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold">{industry.seats}</p>
-                      <p className="text-sm text-muted-foreground">seats</p>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-bold">{industry.seats}</p>
+                        <p className="text-sm text-muted-foreground">seats</p>
+                      </div>
+                      <Badge variant="outline">
+                        {industry.count} orgs
+                      </Badge>
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
+
+          {/* Navigation to Industry Drill Down */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Drill Down by Industry</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => navigateToLevel({ level: 2, title: 'Industry Overview', customerId: 'all' })}
+                className="w-full"
+                variant="outline"
+              >
+                <Briefcase className="h-4 w-4 mr-2" />
+                View by Industry
+              </Button>
+            </CardContent>
+          </Card>
         </>
       )}
 
-      {/* Level 2: Client Level */}
+      {/* Level 2: Industry/Organization Level */}
       {currentLevel.level === 2 && (
         <Card>
           <CardHeader>
-            <CardTitle>Client Overview</CardTitle>
+            <CardTitle>
+              {currentLevel.customerId === 'all' ? 'Industry Overview' : 'Organization Overview'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {clientData.map((client) => (
+              {clientData.map((item) => (
                 <div
-                  key={client.id}
+                  key={item.id}
                   className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 hover:bg-secondary cursor-pointer transition-colors"
-                  onClick={() => navigateToLevel({
-                    level: 3,
-                    title: `Locations - ${client.name}`,
-                    customerId: client.id
-                  })}
+                  onClick={() => {
+                    if (currentLevel.customerId === 'all') {
+                      // Clicking on industry, navigate to organizations in that industry
+                      navigateToLevel({
+                        level: 2,
+                        title: `Organizations - ${item.name}`,
+                        customerId: item.industry
+                      });
+                    } else {
+                      // Clicking on organization, navigate to locations
+                      navigateToLevel({
+                        level: 3,
+                        title: `Locations - ${item.name}`,
+                        customerId: item.id
+                      });
+                    }
+                  }}
                 >
                   <div className="flex items-center gap-3">
-                    <Building2 className="h-6 w-6 text-primary" />
+                    {currentLevel.customerId === 'all' ? (
+                      <Briefcase className="h-6 w-6 text-primary" />
+                    ) : (
+                      <Building2 className="h-6 w-6 text-primary" />
+                    )}
                     <div>
-                      <p className="font-medium">{client.name}</p>
-                      <p className="text-sm text-muted-foreground">{client.industry}</p>
+                      <p className="font-medium">{item.name}</p>
+                      {currentLevel.customerId === 'all' ? (
+                        <p className="text-sm text-muted-foreground">{item.count} organizations</p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">{item.industry}</p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="font-bold">{client.seats}</p>
+                      <p className="font-bold">{item.seats}</p>
                       <p className="text-sm text-muted-foreground">seats</p>
                     </div>
-                    <Badge variant={getExpirationBadgeVariant(client.expiring)}>
-                      {client.expiring} expiring
-                    </Badge>
+                    {currentLevel.customerId === 'all' ? (
+                      <Badge variant="outline">
+                        {item.count} orgs
+                      </Badge>
+                    ) : (
+                      <Badge variant={getExpirationBadgeVariant(item.expiring)}>
+                        {item.expiring} expiring
+                      </Badge>
+                    )}
                   </div>
                 </div>
               ))}
