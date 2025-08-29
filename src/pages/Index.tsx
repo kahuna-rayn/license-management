@@ -6,6 +6,7 @@ import { LicenseAssignments } from '@/components/LicenseAssignments';
 import { RAYNDashboard } from '@/components/dashboard/RAYNDashboard';
 import { ClientDashboard } from '@/components/dashboard/ClientDashboard';
 import { LicenseInformation } from '@/components/dashboard/LicenseInformation';
+import { StaffLicenseSummary } from '@/components/dashboard/StaffLicenseSummary';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight, Shield, Crown, Settings, User } from 'lucide-react';
@@ -68,6 +69,16 @@ const Index = () => {
           return <RAYNDashboard />;
         } else if (isClientAdmin) {
           return <ClientDashboard />;
+        } else if (isManager) {
+          // Managers see their own licenses plus staff summary
+          return (
+            <div className="space-y-6">
+              {/* License Information */}
+              <LicenseInformation />
+              {/* Staff License Summary */}
+              <StaffLicenseSummary />
+            </div>
+          );
         } else {
           // Regular users see a simplified dashboard
           return (
