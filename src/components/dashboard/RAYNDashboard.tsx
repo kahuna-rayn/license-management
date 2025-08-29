@@ -21,6 +21,7 @@ interface DashboardLevel {
   title: string;
   customerId?: string;
   customerName?: string;
+  industryName?: string; // Add industry name for proper navigation
   locationId?: string;
   locationName?: string;
   departmentId?: string;
@@ -239,11 +240,12 @@ export function RAYNDashboard() {
         break;
       case 3:
         // Go back to organization list from organization overview
+        // Use the stored industry name for proper filtering
         setCurrentLevel({ 
           level: 2, 
-          title: `Organizations - ${currentLevel.customerName || currentLevel.customerId}`,
-          customerId: currentLevel.customerId,
-          customerName: currentLevel.customerName
+          title: `Organizations - ${currentLevel.industryName || currentLevel.customerId}`,
+          customerId: currentLevel.industryName, // Use industry name for filtering
+          customerName: currentLevel.industryName
         });
         break;
       case 4:
@@ -252,6 +254,7 @@ export function RAYNDashboard() {
           title: `Location Overview - ${currentLevel.customerName || currentLevel.customerId}`,
           customerId: currentLevel.customerId,
           customerName: currentLevel.customerName,
+          industryName: currentLevel.industryName,
           locationId: currentLevel.locationId,
           locationName: currentLevel.locationName
         });
@@ -497,15 +500,16 @@ export function RAYNDashboard() {
                 <div
                   key={item.id}
                   className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 hover:bg-secondary cursor-pointer transition-colors"
-                  onClick={() => {
-                    // Clicking on organization, navigate to locations
-                    navigateToLevel({
-                      level: 3,
-                      title: `Locations - ${item.name}`,
-                      customerId: item.id,
-                      customerName: item.name
-                    });
-                  }}
+                                       onClick={() => {
+                       // Clicking on organization, navigate to locations
+                       navigateToLevel({
+                         level: 3,
+                         title: `Locations - ${item.name}`,
+                         customerId: item.id,
+                         customerName: item.name,
+                         industryName: currentLevel.customerId // Store the industry name
+                       });
+                     }}
                 >
                   <div className="flex items-center gap-3">
                     <Building2 className="h-6 w-6 text-primary" />
@@ -542,14 +546,15 @@ export function RAYNDashboard() {
                 <div
                   key={location.id}
                   className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 hover:bg-secondary cursor-pointer transition-colors"
-                  onClick={() => navigateToLevel({
-                    level: 4,
-                    title: `Departments - ${location.name}`,
-                    customerId: currentLevel.customerId,
-                    customerName: currentLevel.customerName,
-                    locationId: location.id,
-                    locationName: location.name
-                  })}
+                                     onClick={() => navigateToLevel({
+                     level: 4,
+                     title: `Departments - ${location.name}`,
+                     customerId: currentLevel.customerId,
+                     customerName: currentLevel.customerName,
+                     industryName: currentLevel.industryName,
+                     locationId: location.id,
+                     locationName: location.name
+                   })}
                 >
                   <div className="flex items-center gap-3">
                     <MapPin className="h-6 w-6 text-accent-blue" />
