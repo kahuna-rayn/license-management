@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { LicenseAssignments } from '@/components/LicenseAssignments';
 import { RAYNDashboard } from '@/components/dashboard/RAYNDashboard';
 import { ClientDashboard } from '@/components/dashboard/ClientDashboard';
+import { LicenseInformation } from '@/components/dashboard/LicenseInformation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight, Shield, Crown, Settings, User } from 'lucide-react';
@@ -71,6 +72,9 @@ const Index = () => {
           // Regular users see a simplified dashboard
           return (
             <div className="space-y-6">
+              {/* License Information */}
+              <LicenseInformation />
+              
               {/* Role-Based Content Sections */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Admin Only Content */}
