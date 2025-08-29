@@ -350,26 +350,76 @@ export function RAYNDashboard() {
               <CardTitle>License Expiration Timeline</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="text-center p-4 rounded-lg bg-primary/10">
-                  <p className="text-2xl font-bold text-primary">{metrics.expiringLicenses.active}</p>
-                  <p className="text-sm text-muted-foreground">Active</p>
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">Total Licensed Seats</span>
+                  <span className="font-semibold">{metrics.licensedSeats.toLocaleString()}</span>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-status-danger/10">
-                  <p className="text-2xl font-bold text-status-danger">{metrics.expiringLicenses.overdue}</p>
-                  <p className="text-sm text-muted-foreground">Overdue</p>
+                <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+                  <div className="h-full flex">
+                    <div 
+                      className="bg-primary" 
+                      style={{ width: `${(metrics.expiringLicenses.active / metrics.licensedSeats) * 100}%` }}
+                    />
+                    <div 
+                      className="bg-status-success" 
+                      style={{ width: `${(metrics.expiringLicenses.days90 / metrics.licensedSeats) * 100}%` }}
+                    />
+                    <div 
+                      className="bg-status-info" 
+                      style={{ width: `${(metrics.expiringLicenses.days60 / metrics.licensedSeats) * 100}%` }}
+                    />
+                    <div 
+                      className="bg-status-warning" 
+                      style={{ width: `${(metrics.expiringLicenses.days30 / metrics.licensedSeats) * 100}%` }}
+                    />
+                    <div 
+                      className="bg-status-danger" 
+                      style={{ width: `${(metrics.expiringLicenses.overdue / metrics.licensedSeats) * 100}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-status-warning/10">
-                  <p className="text-2xl font-bold text-status-warning">{metrics.expiringLicenses.days30}</p>
-                  <p className="text-sm text-muted-foreground">30 Days</p>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-primary"></div>
+                    <span className="text-sm">Active</span>
+                  </div>
+                  <span className="font-medium">{metrics.expiringLicenses.active.toLocaleString()}</span>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-status-info/10">
-                  <p className="text-2xl font-bold text-status-info">{metrics.expiringLicenses.days60}</p>
-                  <p className="text-sm text-muted-foreground">60 Days</p>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-status-success"></div>
+                    <span className="text-sm">90+ Days</span>
+                  </div>
+                  <span className="font-medium">{metrics.expiringLicenses.days90}</span>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-status-success/10">
-                  <p className="text-2xl font-bold text-status-success">{metrics.expiringLicenses.days90}</p>
-                  <p className="text-sm text-muted-foreground">90 Days</p>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-status-info"></div>
+                    <span className="text-sm">60-90 Days</span>
+                  </div>
+                  <span className="font-medium">{metrics.expiringLicenses.days60}</span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-status-warning"></div>
+                    <span className="text-sm">30-60 Days</span>
+                  </div>
+                  <span className="font-medium">{metrics.expiringLicenses.days30}</span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-status-danger"></div>
+                    <span className="text-sm">Overdue</span>
+                  </div>
+                  <span className="font-medium">{metrics.expiringLicenses.overdue}</span>
                 </div>
               </div>
             </CardContent>
