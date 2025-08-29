@@ -199,33 +199,10 @@ export function RAYNDashboard() {
       if (isExpiring) client.expiring++;
     });
 
-    // Filter by industry if we're in industry drill-down mode
+    // Filter by industry - customerId contains the industry name
     let filteredClients = Array.from(clientMap.values());
-    if (currentLevel.customerId && currentLevel.customerId !== 'all') {
-      // In this case, customerId contains the industry name
+    if (currentLevel.customerId) {
       filteredClients = filteredClients.filter(client => client.industry === currentLevel.customerId);
-    }
-    
-    // If we're showing all industries, we need to group by industry
-    if (currentLevel.customerId === 'all') {
-      const industryMap = new Map();
-      filteredClients.forEach(client => {
-        if (!industryMap.has(client.industry)) {
-          industryMap.set(client.industry, {
-            id: client.industry,
-            name: client.industry,
-            seats: 0,
-            expiring: 0,
-            industry: client.industry,
-            count: 0
-          });
-        }
-        const industry = industryMap.get(client.industry);
-        industry.seats += client.seats;
-        industry.expiring += client.expiring;
-        industry.count += 1;
-      });
-      filteredClients = Array.from(industryMap.values());
     }
 
     setClientData(filteredClients);
@@ -257,27 +234,17 @@ export function RAYNDashboard() {
   const goBack = () => {
     switch (currentLevel.level) {
       case 2:
-        // Check if we're in industry drill-down mode
-        if (currentLevel.customerId === 'all') {
-          setCurrentLevel({ level: 1, title: 'RAYN Overview' });
-        } else {
-          // We're showing organizations in a specific industry, go back to industry overview
-          setCurrentLevel({ level: 2, title: 'Industry Overview', customerId: 'all' });
-        }
+        // Go back to main overview from organization list
+        setCurrentLevel({ level: 1, title: 'RAYN Overview' });
         break;
       case 3:
-        // Check if we came from industry drill-down or regular client view
-        if (currentLevel.customerId && currentLevel.customerId !== 'all') {
-          // We came from industry drill-down, go back to organization level
-          setCurrentLevel({ 
-            level: 2, 
-            title: `Organizations - ${currentLevel.customerName || currentLevel.customerId}`,
-            customerId: currentLevel.customerId,
-            customerName: currentLevel.customerName
-          });
-        } else {
-          setCurrentLevel({ level: 2, title: 'Client Overview' });
-        }
+        // Go back to organization list from organization overview
+        setCurrentLevel({ 
+          level: 2, 
+          title: `Organizations - ${currentLevel.customerName || currentLevel.customerId}`,
+          customerId: currentLevel.customerId,
+          customerName: currentLevel.customerName
+        });
         break;
       case 4:
         setCurrentLevel({ 
@@ -331,7 +298,7 @@ export function RAYNDashboard() {
             <p className="text-muted-foreground">
               Level {currentLevel.level} - {
                 currentLevel.level === 1 ? 'RAYN Overview' :
-                currentLevel.level === 2 ? (currentLevel.customerId === 'all' ? 'Industry Level' : 'Organization Level') :
+                currentLevel.level === 2 ? 'Organization Level' :
                 currentLevel.level === 3 ? 'Location Level' :
                 'Department Level'
               }
@@ -518,13 +485,11 @@ export function RAYNDashboard() {
         </>
       )}
 
-      {/* Level 2: Industry/Organization Level */}
+      {/* Level 2: Organization Level */}
       {currentLevel.level === 2 && (
         <Card>
           <CardHeader>
-            <CardTitle>
-              {currentLevel.customerId === 'all' ? 'Industry Overview' : 'Organization Overview'}
-            </CardTitle>
+            <CardTitle>Organization Overview</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -533,38 +498,20 @@ export function RAYNDashboard() {
                   key={item.id}
                   className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 hover:bg-secondary cursor-pointer transition-colors"
                   onClick={() => {
-                    if (currentLevel.customerId === 'all') {
-                      // Clicking on industry, navigate to organizations in that industry
-                      navigateToLevel({
-                        level: 2,
-                        title: `Organizations - ${item.name}`,
-                        customerId: item.industry,
-                        customerName: item.name
-                      });
-                    } else {
-                      // Clicking on organization, navigate to locations
-                      navigateToLevel({
-                        level: 3,
-                        title: `Locations - ${item.name}`,
-                        customerId: item.id,
-                        customerName: item.name
-                      });
-                    }
+                    // Clicking on organization, navigate to locations
+                    navigateToLevel({
+                      level: 3,
+                      title: `Locations - ${item.name}`,
+                      customerId: item.id,
+                      customerName: item.name
+                    });
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    {currentLevel.customerId === 'all' ? (
-                      <Briefcase className="h-6 w-6 text-primary" />
-                    ) : (
-                      <Building2 className="h-6 w-6 text-primary" />
-                    )}
+                    <Building2 className="h-6 w-6 text-primary" />
                     <div>
                       <p className="font-medium">{item.name}</p>
-                      {currentLevel.customerId === 'all' ? (
-                        <p className="text-sm text-muted-foreground">{item.count} organizations</p>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{item.industry}</p>
-                      )}
+                      <p className="text-sm text-muted-foreground">{item.industry}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -572,15 +519,9 @@ export function RAYNDashboard() {
                       <p className="font-bold">{item.seats}</p>
                       <p className="text-sm text-muted-foreground">seats</p>
                     </div>
-                    {currentLevel.customerId === 'all' ? (
-                      <Badge variant="outline">
-                        {item.count} orgs
-                      </Badge>
-                    ) : (
-                      <Badge variant={getExpirationBadgeVariant(item.expiring)}>
-                        {item.expiring} expiring
-                      </Badge>
-                    )}
+                    <Badge variant={getExpirationBadgeVariant(item.expiring)}>
+                      {item.expiring} expiring
+                    </Badge>
                   </div>
                 </div>
               ))}
