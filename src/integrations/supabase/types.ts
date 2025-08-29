@@ -1665,19 +1665,19 @@ export type Database = {
       }
       product_license_assignments: {
         Row: {
-          access_level: Database["public"]["Enums"]["app_role"]
+          access_level: Database["public"]["Enums"]["access_level_type"]
           id: string
           license_id: string
           user_id: string
         }
         Insert: {
-          access_level?: Database["public"]["Enums"]["app_role"]
+          access_level?: Database["public"]["Enums"]["access_level_type"]
           id?: string
           license_id: string
           user_id: string
         }
         Update: {
-          access_level?: Database["public"]["Enums"]["app_role"]
+          access_level?: Database["public"]["Enums"]["access_level_type"]
           id?: string
           license_id?: string
           user_id?: string
@@ -2352,19 +2352,19 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["access_level_type"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: Database["public"]["Enums"]["access_level_type"]
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: Database["public"]["Enums"]["access_level_type"]
           user_id?: string
         }
         Relationships: []
@@ -2486,7 +2486,7 @@ export type Database = {
       }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
-        Returns: Database["public"]["Enums"]["app_role"]
+        Returns: Database["public"]["Enums"]["access_level_type"]
       }
       get_key_dates: {
         Args: Record<PropertyKey, never>
@@ -2593,7 +2593,7 @@ export type Database = {
       }
       has_role: {
         Args:
-          | { _role: Database["public"]["Enums"]["app_role"]; _user_id: string }
+          | { _role: Database["public"]["Enums"]["access_level_type"]; _user_id: string }
           | { required_role: string; user_id: string }
         Returns: boolean
       }
@@ -2616,7 +2616,7 @@ export type Database = {
         | "Security monitoring"
         | "Compliance audit"
         | "Training and awareness"
-      app_role: "admin" | "moderator" | "user"
+      access_level_type: "admin" | "manager" | "user"
       approval_status_enum:
         | "Not Submitted"
         | "Submitted"
@@ -2759,7 +2759,7 @@ export const Constants = {
         "Compliance audit",
         "Training and awareness",
       ],
-      app_role: ["admin", "moderator", "user"],
+      access_level_type: ["admin", "manager", "user"],
       approval_status_enum: [
         "Not Submitted",
         "Submitted",

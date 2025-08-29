@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, Users, Building2, UserCheck, UserX } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import type { AccessLevel } from '@/lib/roles';
 
 interface Employee {
   id: string;
@@ -177,7 +178,7 @@ export function LicenseAssignments() {
     }
   };
 
-  const assignLicenses = async (accessLevel: 'admin' | 'moderator' | 'user' = 'user') => {
+  const assignLicenses = async (accessLevel: AccessLevel = 'user') => {
     if (selectedEmployees.size === 0) {
       toast({
         title: "No employees selected",

@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { useUserRole } from '@/hooks/useUserRole';
-import { AppRole } from '@/lib/roles';
+import { AccessLevel } from '@/lib/roles';
 
 interface RoleGuardProps {
   children: ReactNode;
-  requiredRole: AppRole;
+  requiredRole: AccessLevel;
   fallback?: ReactNode;
   showLoading?: boolean;
 }
@@ -15,7 +15,7 @@ export function RoleGuard({
   fallback = null, 
   showLoading = true 
 }: RoleGuardProps) {
-  const { userRole, loading, isAdmin, isModerator, isUser } = useUserRole();
+  const { userRole, loading, isAdmin, isManager, isUser } = useUserRole();
 
   if (loading && showLoading) {
     return (
@@ -35,8 +35,8 @@ export function RoleGuard({
     switch (requiredRole) {
       case 'admin':
         return isAdmin;
-      case 'moderator':
-        return isAdmin || isModerator;
+      case 'manager':
+        return isAdmin || isManager;
       case 'user':
         return true; // All authenticated users have user access
       default:
@@ -56,8 +56,8 @@ export function AdminOnly({ children, fallback }: { children: ReactNode; fallbac
   return <RoleGuard requiredRole="admin" fallback={fallback}>{children}</RoleGuard>;
 }
 
-export function ModeratorOrHigher({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
-  return <RoleGuard requiredRole="moderator" fallback={fallback}>{children}</RoleGuard>;
+export function ManagerOrHigher({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  return <RoleGuard requiredRole="manager" fallback={fallback}>{children}</RoleGuard>;
 }
 
 export function AuthenticatedOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {

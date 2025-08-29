@@ -1,10 +1,10 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 
-export type AppRole = Database['public']['Enums']['app_role'];
+export type AccessLevel = Database['public']['Enums']['access_level_type'];
 
 export interface UserRole {
-  role: AppRole;
+  role: AccessLevel;
   source: 'user_roles' | 'product_license_assignments' | 'default';
   isRaynAdmin: boolean;
   isClientAdmin: boolean;
@@ -103,7 +103,7 @@ export async function getUserRole(userId: string): Promise<UserRole> {
 /**
  * Check if user has a specific role
  */
-export async function hasRole(userId: string, requiredRole: AppRole): Promise<boolean> {
+export async function hasRole(userId: string, requiredRole: AccessLevel): Promise<boolean> {
   const userRole = await getUserRole(userId);
   return userRole.role === requiredRole;
 }
@@ -133,16 +133,16 @@ export async function isAdmin(userId: string): Promise<boolean> {
 }
 
 /**
- * Check if user is a moderator
+ * Check if user is a manager
  */
-export async function isModerator(userId: string): Promise<boolean> {
-  return hasRole(userId, 'moderator');
+export async function isManager(userId: string): Promise<boolean> {
+  return hasRole(userId, 'manager');
 }
 
 /**
  * Get role display name with proper differentiation
  */
-export function getRoleDisplayName(role: AppRole, userRole?: UserRole): string {
+export function getRoleDisplayName(role: AccessLevel, userRole?: UserRole): string {
   // If we have userRole context, use it to differentiate admin types
   if (userRole) {
     if (userRole.isRaynAdmin) {
@@ -157,8 +157,8 @@ export function getRoleDisplayName(role: AppRole, userRole?: UserRole): string {
   switch (role) {
     case 'admin':
       return 'Admin'; // Generic admin if no context
-    case 'moderator':
-      return 'Moderator';
+    case 'manager':
+      return 'Manager';
     case 'user':
       return 'User';
     default:
@@ -169,7 +169,7 @@ export function getRoleDisplayName(role: AppRole, userRole?: UserRole): string {
 /**
  * Get role description with proper differentiation
  */
-export function getRoleDescription(role: AppRole, userRole?: UserRole): string {
+export function getRoleDescription(role: AccessLevel, userRole?: UserRole): string {
   if (userRole) {
     if (userRole.isRaynAdmin) {
       return 'Full system access with RAYN administrative privileges';
@@ -182,8 +182,8 @@ export function getRoleDescription(role: AppRole, userRole?: UserRole): string {
   switch (role) {
     case 'admin':
       return 'Administrative access';
-    case 'moderator':
-      return 'Enhanced access with moderation capabilities';
+    case 'manager':
+      return 'Enhanced access with management capabilities';
     case 'user':
       return 'Standard user access';
     default:

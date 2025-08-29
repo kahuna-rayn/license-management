@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { AppRole, UserRole } from '@/lib/roles';
+import { UserRole } from '@/lib/roles';
 
 interface Customer {
   id: string;

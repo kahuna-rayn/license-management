@@ -60,7 +60,7 @@ export function UserRoleDisplay() {
     }
     
     switch (userRole.role) {
-      case 'moderator':
+      case 'manager':
         return <Settings className="h-4 w-4" />;
       case 'user':
         return <User className="h-4 w-4" />;

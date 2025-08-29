@@ -4,14 +4,14 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Eye, EyeOff, Building2 } from 'lucide-react';
 import { useDebug, type Customer } from '@/contexts/DebugContext';
-import { UserRole, AppRole } from '@/lib/roles';
+import { UserRole, AccessLevel } from '@/lib/roles';
 import { supabase } from '@/integrations/supabase/client';
 
 const DEBUG_ROLES: { label: string; role: UserRole }[] = [
   {
     label: 'Client Admin',
     role: {
-      role: 'admin' as AppRole,
+      role: 'admin' as AccessLevel,
       source: 'product_license_assignments',
       isRaynAdmin: false,
       isClientAdmin: true,
@@ -19,9 +19,9 @@ const DEBUG_ROLES: { label: string; role: UserRole }[] = [
     }
   },
   {
-    label: 'Moderator',
+    label: 'Manager',
     role: {
-      role: 'moderator' as AppRole,
+      role: 'manager' as AccessLevel,
       source: 'product_license_assignments',
       isRaynAdmin: false,
       isClientAdmin: false,
@@ -31,7 +31,7 @@ const DEBUG_ROLES: { label: string; role: UserRole }[] = [
   {
     label: 'User',
     role: {
-      role: 'user' as AppRole,
+      role: 'user' as AccessLevel,
       source: 'default',
       isRaynAdmin: false,
       isClientAdmin: false,
@@ -78,14 +78,14 @@ export function DebugRoleToggle() {
         // Create role with selected customer_id if it's a client role
         const roleWithCustomer = {
           ...selectedRole.role,
-          customer_id: selectedRole.role.isClientAdmin || selectedRole.role.role === 'moderator' || selectedRole.role.role === 'user' 
+          customer_id: selectedRole.role.isClientAdmin || selectedRole.role.role === 'manager' || selectedRole.role.role === 'user' 
             ? selectedCustomer?.id || customers[0]?.id 
             : undefined
         };
         setDebugRole(roleWithCustomer);
         
         // Auto-select first customer if none selected and role requires customer
-        if (!selectedCustomer && (selectedRole.role.isClientAdmin || selectedRole.role.role === 'moderator' || selectedRole.role.role === 'user')) {
+        if (!selectedCustomer && (selectedRole.role.isClientAdmin || selectedRole.role.role === 'manager' || selectedRole.role.role === 'user')) {
           setSelectedCustomer(customers[0] || null);
         }
       }
@@ -105,7 +105,7 @@ export function DebugRoleToggle() {
     }
   };
 
-  const requiresCustomer = debugRole && (debugRole.isClientAdmin || debugRole.role === 'moderator' || debugRole.role === 'user');
+  const requiresCustomer = debugRole && (debugRole.isClientAdmin || debugRole.role === 'manager' || debugRole.role === 'user');
 
   return (
     <div className="flex items-center gap-3">

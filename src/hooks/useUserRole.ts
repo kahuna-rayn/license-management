@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/components/AuthProvider';
-import { getUserRole, hasRole, isAdmin, isModerator, isRaynAdmin, isClientAdmin, type UserRole, type AppRole } from '@/lib/roles';
+import { getUserRole, hasRole, isAdmin, isManager, isRaynAdmin, isClientAdmin, type UserRole, type AccessLevel } from '@/lib/roles';
 import { useDebug } from '@/contexts/DebugContext';
 
 export function useUserRole() {
@@ -38,7 +38,7 @@ export function useUserRole() {
   }, [fetchUserRole]);
 
   // Check if user has specific role
-  const checkRole = useCallback(async (requiredRole: AppRole): Promise<boolean> => {
+  const checkRole = useCallback(async (requiredRole: AccessLevel): Promise<boolean> => {
     if (!user?.id) return false;
     return hasRole(user.id, requiredRole);
   }, [user?.id]);
@@ -49,10 +49,10 @@ export function useUserRole() {
     return isAdmin(user.id);
   }, [user?.id]);
 
-  // Check if user is moderator
-  const checkIsModerator = useCallback(async (): Promise<boolean> => {
+  // Check if user is manager
+  const checkIsManager = useCallback(async (): Promise<boolean> => {
     if (!user?.id) return false;
-    return isModerator(user.id);
+    return isManager(user.id);
   }, [user?.id]);
 
   // Check if user is RAYN admin
@@ -80,13 +80,13 @@ export function useUserRole() {
     refetch: fetchUserRole,
     checkRole,
     checkIsAdmin,
-    checkIsModerator,
+    checkIsManager,
     checkIsRaynAdmin,
     checkIsClientAdmin,
     isAdmin: effectiveRole?.isRaynAdmin || effectiveRole?.isClientAdmin,
     isRaynAdmin: effectiveRole?.isRaynAdmin,
     isClientAdmin: effectiveRole?.isClientAdmin,
-    isModerator: effectiveRole?.role === 'moderator',
+    isManager: effectiveRole?.role === 'manager',
     isUser: effectiveRole?.role === 'user',
     isDebugMode,
   };

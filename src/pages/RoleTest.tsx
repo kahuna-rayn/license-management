@@ -1,6 +1,6 @@
 import { useAuth } from '@/components/AuthProvider';
 import { useUserRole } from '@/hooks/useUserRole';
-import { RoleGuard, AdminOnly, ModeratorOrHigher } from '@/components/RoleGuard';
+import { RoleGuard, AdminOnly, ManagerOrHigher } from '@/components/RoleGuard';
 import { UserRoleDisplay } from '@/components/UserRoleDisplay';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -136,29 +136,29 @@ export default function RoleTest() {
             </CardContent>
           </Card>
 
-          {/* Moderator Access Test */}
+          {/* Manager Access Test */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                Moderator Access
+                Manager Access
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ModeratorOrHigher
+              <ManagerOrHigher
                 fallback={
                   <div className="text-center space-y-2">
                     <XCircle className="h-8 w-8 text-red-500 mx-auto" />
-                    <p className="text-sm text-muted-foreground">Moderator access denied</p>
+                    <p className="text-sm text-muted-foreground">Manager access denied</p>
                   </div>
                 }
               >
                 <div className="text-center space-y-2">
                   <CheckCircle className="h-8 w-8 text-green-500 mx-auto" />
-                  <p className="text-sm font-medium">Moderator access granted!</p>
+                  <p className="text-sm font-medium">Manager access granted!</p>
                   <p className="text-xs text-muted-foreground">You can see this content</p>
                 </div>
-              </ModeratorOrHigher>
+              </ManagerOrHigher>
             </CardContent>
           </Card>
 
@@ -212,12 +212,12 @@ export default function RoleTest() {
                 
                 <div className="text-center p-4 border rounded-lg">
                   <Settings className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                  <h3 className="font-semibold">Moderator</h3>
+                  <h3 className="font-semibold">Manager</h3>
                   <p className="text-sm text-muted-foreground">
-                    Enhanced access with moderation capabilities
+                    Enhanced access with management capabilities
                   </p>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Source: product_license_assignments table (access_level = 'moderator')
+                    Source: product_license_assignments table (access_level = 'manager')
                   </p>
                 </div>
                 
@@ -238,7 +238,7 @@ export default function RoleTest() {
                 <ol className="text-sm space-y-1 list-decimal list-inside">
                   <li>Check <code>user_roles</code> table for <code>app_role = 'admin'</code> → RAYN Admin</li>
                   <li>Check <code>product_license_assignments</code> table for <code>access_level = 'admin'</code> → Client Admin</li>
-                  <li>Check <code>product_license_assignments</code> table for <code>access_level = 'moderator'</code> → Moderator</li>
+                  <li>Check <code>product_license_assignments</code> table for <code>access_level = 'manager'</code> → Manager</li>
                   <li>Default to <code>'user'</code> if neither record exists</li>
                 </ol>
               </div>

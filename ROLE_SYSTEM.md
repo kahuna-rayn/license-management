@@ -10,7 +10,7 @@ The system implements a four-tier role hierarchy:
 
 1. **RAYN Admin** (`admin`) - Full system access with RAYN administrative privileges
 2. **Client Admin** (`admin`) - Client-level administrative access for license management
-3. **Moderator** (`moderator`) - Enhanced access with moderation capabilities  
+3. **Manager** (`manager`) - Enhanced access with management capabilities  
 4. **User** (`user`) - Standard user access (default)
 
 ## Role Assignment Logic
@@ -19,20 +19,20 @@ User roles are determined using the following priority-based logic:
 
 ### 1. RAYN Admin Check
 - **Source**: `user_roles` table
-- **Condition**: `app_role = 'admin'`
+- **Condition**: `role = 'admin'` (uses `access_level_type` enum)
 - **Result**: User becomes RAYN Admin with full system access
 - **Priority**: Highest
 
 ### 2. Client Admin Check
 - **Source**: `product_license_assignments` table
-- **Condition**: `access_level = 'admin'`
+- **Condition**: `access_level = 'admin'` (uses `access_level_type` enum)
 - **Result**: User becomes Client Admin with client-level administrative access
 - **Priority**: Medium
 
 ### 3. Product License Assignment
 - **Source**: `product_license_assignments` table
 - **Condition**: User has an `access_level` record (not admin)
-- **Result**: User gets the role specified in `access_level` column
+- **Result**: User gets the role specified in `access_level` column (uses `access_level_type` enum)
 - **Priority**: Low
 
 ### 4. Default User Role
@@ -59,7 +59,7 @@ User roles are determined using the following priority-based logic:
 import { useUserRole } from '@/hooks/useUserRole';
 
 function MyComponent() {
-  const { userRole, isAdmin, isModerator } = useUserRole();
+  const { userRole, isAdmin, isManager } = useUserRole();
   
   if (isAdmin) {
     return <AdminPanel />;
@@ -71,7 +71,7 @@ function MyComponent() {
 
 ### Role-Based Content Protection
 ```typescript
-import { AdminOnly, ModeratorOrHigher } from '@/components/RoleGuard';
+import { AdminOnly, ManagerOrHigher } from '@/components/RoleGuard';
 
 function Dashboard() {
   return (
@@ -80,9 +80,9 @@ function Dashboard() {
         <AdminPanel />
       </AdminOnly>
       
-      <ModeratorOrHigher fallback={<AccessDenied />}>
-        <ModerationTools />
-      </ModeratorOrHigher>
+      <ManagerOrHigher fallback={<AccessDenied />}>
+        <ManagementTools />
+      </ManagerOrHigher>
       
       <UserDashboard />
     </div>
@@ -96,8 +96,8 @@ import { RoleGuard } from '@/components/RoleGuard';
 
 function CustomComponent() {
   return (
-    <RoleGuard requiredRole="moderator" fallback={<AccessDenied />}>
-      <ModeratorContent />
+    <RoleGuard requiredRole="manager" fallback={<AccessDenied />}>
+      <ManagerContent />
     </RoleGuard>
   );
 }
@@ -109,9 +109,9 @@ function CustomComponent() {
 Navigate to `/role-test` to see a comprehensive role system test page.
 
 ### 2. Test Different Scenarios
-- **RAYN Admin User**: Add a record to `user_roles` table with `app_role = 'admin'`
-- **Client Admin User**: Add a record to `product_license_assignments` table with `access_level = 'admin'`
-- **Moderator User**: Add a record to `product_license_assignments` table with `access_level = 'moderator'`
+- **RAYN Admin User**: Add a record to `user_roles` table with `role = 'admin'` (uses `access_level_type` enum)
+- **Client Admin User**: Add a record to `product_license_assignments` table with `access_level = 'admin'` (uses `access_level_type` enum)
+- **Manager User**: Add a record to `product_license_assignments` table with `access_level = 'manager'` (uses `access_level_type` enum)
 - **Regular User**: No records in either table (defaults to 'user')
 
 ### 3. Verify Role Assignment

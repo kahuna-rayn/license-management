@@ -8,13 +8,13 @@ import { ClientDashboard } from '@/components/dashboard/ClientDashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight, Shield, Crown, Settings, User } from 'lucide-react';
-import { RoleGuard, AdminOnly, ModeratorOrHigher } from '@/components/RoleGuard';
+import { RoleGuard, AdminOnly, ManagerOrHigher } from '@/components/RoleGuard';
 import { UserRoleDisplay } from '@/components/UserRoleDisplay';
 import { useUserRole } from '@/hooks/useUserRole';
 
 const Index = () => {
   const { user, loading } = useAuth();
-  const { userRole, isAdmin, isModerator, isRaynAdmin, isClientAdmin } = useUserRole();
+  const { userRole, isAdmin, isManager, isRaynAdmin, isClientAdmin } = useUserRole();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -115,18 +115,18 @@ const Index = () => {
                   </Card>
                 </AdminOnly>
 
-                {/* Moderator or Higher Content */}
-                <ModeratorOrHigher fallback={
+                {/* Manager or Higher Content */}
+                <ManagerOrHigher fallback={
                   <Card className="opacity-50">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Settings className="h-5 w-5" />
-                        Moderation Tools
+                        Management Tools
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        Moderator access required to view this content.
+                        Manager access required to view this content.
                       </p>
                     </CardContent>
                   </Card>
@@ -135,12 +135,12 @@ const Index = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Settings className="h-5 w-5 text-blue-600" />
-                        Moderation Tools
+                        Management Tools
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <p className="text-sm text-muted-foreground">
-                        Enhanced access with moderation capabilities.
+                        Enhanced access with management capabilities.
                       </p>
                       <div className="space-y-2">
                         <Button variant="outline" size="sm" className="w-full">
@@ -155,7 +155,7 @@ const Index = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </ModeratorOrHigher>
+                </ManagerOrHigher>
 
                 {/* User Content (Always Visible) */}
                 <Card>
